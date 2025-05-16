@@ -1,7 +1,7 @@
 // components/menupage/MenuLayout.js
 import { useState, useEffect } from 'react';
 import MenuCard from './MenuCard';
-import { getMenuItems } from '@/lib/db';
+
 
 const categories = [
   "Heiß Getränke",

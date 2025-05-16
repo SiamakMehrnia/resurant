@@ -1,7 +1,5 @@
-import MenuLayout from '../../components/menupage/MenuLayout';
-import { getMenuItems } from '@/lib/db';
+import MenuLayout from "../../components/menupage/MenuLayout";
 
 export default function Menu() {
-  const data = getMenuItems();
-  return <MenuLayout data={data} />;
+  return <MenuLayout />;
 }

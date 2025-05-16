@@ -3,7 +3,6 @@ import { useState, useEffect } from "react";
 import AddMenuItem from "./AddMenuItem";
 import ManageHomeImages from "./ManageHomeImages";
 import MenuCardAdmin from "./MenuCardAdmin";
-import { getMenuItems } from "@/lib/db";
 import Swal from "sweetalert2";
 
 const AdminLayout = () => {
