@@ -46,39 +46,37 @@ export default async function handler(req, res) {
           });
         });
 
-        console.log("Full Fields Object:", fields);
-        console.log("Full Files Object:", files);
-        const file = files.image ? files.image[0] : null;
-        console.log("Received file:", file);
-        console.log("File path:", file ? file.filepath : "No file received");
+        console.log("Parsed Fields after processing:", fields);
+        console.log("Parsed Files after processing:", files);
+
         const existingItem = await MenuItem.findById(id);
-        if (!existingItem)
+        if (!existingItem) {
           return res.status(404).json({ success: false, message: "Item not found" });
+        }
 
         const name = fields.name ? fields.name[0] : existingItem.name;
         const price = fields.price ? parseFloat(fields.price[0]) : existingItem.price;
         const category = fields.category ? fields.category[0] : existingItem.category;
         const description = fields.description ? fields.description[0] : existingItem.description;
 
-   const available = Array.isArray(fields.available)
-  ? fields.available[0] === "true"
-  : fields.available === "true";
+        const available = Array.isArray(fields.available) ? fields.available[0] === "true" : fields.available === "true";
         console.log("Received available:", available);
 
         let imageUrl = existingItem.image;
         let publicId = existingItem.public_id;
 
-        if (file) {
-          console.log("Updating image in Cloudinary...");
+        console.log('Received files object:', files);
+        // اگر فایل وجود داشته باشد، آن را به Cloudinary آپلود کن
+        if (files.file) {
+          const file = files.file[0];
+          console.log("Uploading image to Cloudinary...");
           if (publicId) {
             await cloudinary.uploader.destroy(publicId);
           }
-          const uploadResponse = await cloudinary.uploader.upload(
-            file.filepath,
-            {
-              folder: "resturant",
-            }
-          );
+          const uploadResponse = await cloudinary.uploader.upload(file.filepath, {
+            folder: "resturant",
+          });
+          console.log('Image upload response:', uploadResponse);
           imageUrl = uploadResponse.secure_url;
           publicId = uploadResponse.public_id;
         }
@@ -114,6 +112,7 @@ export default async function handler(req, res) {
             .json({ success: false, message: "Item not found" });
 
         if (deletedItem.public_id) {
+         
           await cloudinary.uploader.destroy(deletedItem.public_id);
         }
 

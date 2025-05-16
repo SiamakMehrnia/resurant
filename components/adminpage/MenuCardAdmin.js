@@ -12,17 +12,34 @@ const MenuCardAdmin = ({ item, onDelete, onEdit, onToggleAvailable }) => {
   const handleToggle = async () => {
     try {
       const updatedStatus = !isAvailable;
+      console.log("Toggling availability to:", updatedStatus);
       setIsAvailable(updatedStatus);
 
-      // ارسال درخواست PUT به API
-      await axios.put(`/api/menuapi/${item._id}`, {
-        available: updatedStatus,
+      const formData = new FormData();
+      formData.append("available", updatedStatus.toString());
+
+      const response = await axios.put(`/api/menuapi/${item._id}`, formData, {
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
       });
-      
+
+      console.log("Toggle response:", response.data);
     } catch (error) {
       console.error("Error updating availability:", error);
-      // اگر درخواست ناموفق بود، وضعیت را به حالت قبلی برگردان
       setIsAvailable(!isAvailable);
+    }
+  };
+
+  const handleDeleteClick = async () => {
+    console.log("Deleting item with id:", item._id);
+    
+    try {
+      const response = await axios.delete(`/api/menuapi/${item._id}`);
+      console.log("Delete response:", response.data);
+      onDelete(item._id);
+    } catch (error) {
+      console.error("Error deleting item:", error);
     }
   };
 
@@ -35,7 +52,7 @@ const MenuCardAdmin = ({ item, onDelete, onEdit, onToggleAvailable }) => {
       <span className="text-xs text-gray-500 mb-2">{item.category}</span>
       <div className="absolute top-2 right-2 flex gap-2">
         <button className="bg-green-500 text-white px-2 py-1 rounded text-sm" onClick={() => onEdit(item)}>Edit</button>
-        <button className="bg-red-500 text-white px-2 py-1 rounded text-sm" onClick={() => onDelete(item._id)}>Delete</button>
+        <button className="bg-red-500 text-white px-2 py-1 rounded text-sm" onClick={handleDeleteClick}>Delete</button>
       </div>
       <button
         className={`mt-2 px-4 py-1 rounded ${isAvailable ? 'bg-blue-500 text-white' : 'bg-gray-400 text-gray-800'}`}
