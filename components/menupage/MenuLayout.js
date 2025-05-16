@@ -1,6 +1,6 @@
 // components/menupage/MenuLayout.js
 import { useState, useEffect } from 'react';
-import MenuCard from './MenuCard';
+import MenuCard from "./MenuCard.js"
 
 
 const categories = [
